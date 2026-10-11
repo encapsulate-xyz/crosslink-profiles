@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "network": "Crosslink v14",
+  "anchor": "zfinv1JOZt6lwMlkq6c9JnqR-iEmGIVlPWg3fVNRGY8p7BoRzBYl5k05kpejkoJhnPIqN1FAzPPwwAQawuUars9MvnsQvKQA7ZP58QSQDXintacS9KwhTUTSt7RelPMGyEgkkF",
+  "name": "Encapsulate",
+  "description": "Validator infrastructure for new chains, since 2020. Early to testnet, quick to upgrade, easy to reach. Trusted by Sui, NEAR, Monad, Lido, Starknet and more.",
+  "website": "https://encapsulate.xyz",
+  "x": "https://x.com/encaphq",
+  "github": "https://github.com/encapsulate-xyz",
+  "security_contact": "security@encapsulate.xyz",
+  "logo": {
+    "url": "https://raw.githubusercontent.com/encapsulate-xyz/assets/refs/heads/main/encapsulate.png",
+    "sha256": "9524c863dbeee5de997a69704c8b3beddc4c305772eceadd838a6a978ae37fef"
+  },
+  "block": {
+    "height": 40146,
+    "hash": "00000a639beae495e601b2a9e8a9515eb941c12ee5c93c30b406a1557c54cea4"
+  },
+  "pubkey": "24e66dea5c0c964aba73d267a91fa21261885653d68377d5351198f29ec1a11c",
+  "signature": "82b33aa26f88faf4d344b180f312c82a047e08a280be47aa3db72b57bc281449fc960b35d032d45923bae481e1b88fe54337a07bc4f54467b69f3cc17543e700",
+  "members": [
+    {
+      "address": "tmKxXxeU6aCsgnTACAoHGPSwkZTqAopfCj3",
+      "block": {
+        "height": 40146,
+        "hash": "00000a639beae495e601b2a9e8a9515eb941c12ee5c93c30b406a1557c54cea4"
+      },
+      "pubkey": "035c3d66ea27efd1db5a24ac556837242b98c2c6969fe5d424035083a1bc7c7b51",
+      "signature": "30440220406b1b98f5595e248d28b819ab43e0830f547fea3598ff1fe2e34064d382225102204907cb4500a10a0fad02c88f043490dedb2fc3b2239a6b2888f041a4dc6b695c"
+    }
+  ]
+}
