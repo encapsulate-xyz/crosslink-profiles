@@ -1,0 +1,7 @@
+# Who reviews changes to the registry's code, rules and lists: the signing script, the checks, the
+# workflows, the reserved and review lists, the schema and the docs.
+* @aditya-manit
+
+# Claims have no owner: the claim workflow checks each one and merges it on its own, and a name that
+# needs a person gets the needs-review label instead. (The last matching line wins.)
+/claims/
