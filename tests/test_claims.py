@@ -99,6 +99,21 @@ class Derivation(unittest.TestCase):
             self.assertEqual(S.mnemonic(e), v["mnemonic"])
             self.assertEqual([w[1].hex() for w in S.wallet_keys(e, 3)], v["transparent_pubkeys"])
 
+    def test_ripemd160(self):
+        # The algorithm's published test vectors, then hashlib's, where its OpenSSL still has it.
+        for msg, want in [(b"", "9c1185a5c5e9fc54612808977ee8f548b2258d31"), (b"abc", "8eb208f7e05d987a9b044a8e98c6b087f15a0bfc"),
+                          (b"message digest", "5d0689ef49d2fae572b881b123a85ffa21595f36"),
+                          (b"12345678901234567890123456789012345678901234567890123456789012345678901234567890", "9b752e45573d4b39f4dbd3323cab82bf63326bfb")]:
+            self.assertEqual(S.ripemd160(msg).hex(), want)
+            self.assertEqual(C.ripemd160(msg).hex(), want)
+        try:
+            hashlib.new("ripemd160", b"")
+        except ValueError:
+            return
+        for n in range(0, 200, 7):
+            m = bytes(range(n % 256)) * (n // 50 + 1)
+            self.assertEqual(S.ripemd160(m), hashlib.new("ripemd160", m).digest())
+
     def test_explicit_bft_key_seed(self):
         self.assertEqual(S.raw_public(S.finalizer_key(b"encapsulate-test-seed")).hex(),
                          "8262c5578dfba3d3b77b3d6fda4950632a0e7be72a65ed9d5a8a166c55e70e94")

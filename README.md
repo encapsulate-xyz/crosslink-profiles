@@ -149,7 +149,7 @@ To check a claim yourself against your own node: `python3 tools/check.py --rpc h
 - Repository variables: `CHAIN_API` (the chain source, by default Holdfast) and `CLAIM_BOT` (the login of the GitHub App the claim page submits with). Pull requests from `CLAIM_BOT` that fail are closed, since nobody can push a fix to them.
 - Tests: `pip install --require-hashes -r tools/requirements.txt`, then `python3 -m unittest discover tests`.
 
-Report a problem with the registry or the script by [opening an issue](https://github.com/encapsulate-xyz/crosslink-profiles/issues), or privately through the repository's Security tab (Report a vulnerability).
+Report a problem with the registry or the script by [opening an issue](https://github.com/encapsulate-xyz/crosslink-profiles/issues).
 
 ## License
 
