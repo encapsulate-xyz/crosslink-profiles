@@ -1,0 +1,25 @@
+# Addresses nobody can claim, because their keys are public: anyone could sign for them.
+#
+# The shared faucet wallet: the Crosslink wallet's built-in test phrase
+# ("abandon" x11, "about"; zebra-crosslink wallet/lib.rs), m/44'/1'/0'/0/0 to /19.
+# Address 0 is the faucet, tmRB9AEVsxNAQsqtJPqJUje9KCaAijpS77z.
+tmRB9AEVsxNAQsqtJPqJUje9KCaAijpS77z
+tmMusggSMq97LU2g3XUysVeW8mtXj2HZNV3
+tmUSj3wD5frvQRfNpM4DZEX22oeuRNm7Vex
+tmEyDkjcUgqZdWMdTaVpMW6QeHEvR3uWAN5
+tmHvE6v8wZ8F2wDUtKUwYk6xJqmFKDxvuaT
+tmKQN6cAGL9rLf5wyVmsBvs8VMahi7sfh91
+tmRCbrqTrSnF5BqLvsMx7z47ZFU4GdqXsNW
+tmAtJsimZyu4NedqeF3M6tu8KsRwWtpGftq
+tmY8Y1VYLvQArfZ4Lie2TzL5o2zpQJtrZSy
+tmRH6rhJ5V7L6JQUthf7iUFXZdQHUw3tao2
+tmUkCn6T72Q3WGCgR9EsYeLZ6o1STGahnxB
+tmEG1W7J9RQapPmJAx28r1hQC65cudjPwSB
+tmLA2ZbzszzEg4zkV7rFyhQb5x3qCxBmE8Q
+tmGnaV8qNmrrEpkQ1xeNufsanHHnKSSBVKk
+tmNVQCnrEcqk32zBEeD6onHEiPzF211JCqD
+tmHWAToXkZBLDP3SK7BXgtPMTWkqU1G1JF2
+tmJ6awJTNdbxYwcmHSb2kXfcqjmUpxNabtC
+tmCnaxQxLQm8yNUuQvG8WTMte836JREBzDB
+tmNkBzZXffK1XJwRGXZANoHnCGD94LmsLo5
+tmQfecP8ZyAU7WrDLNczKdh6362QP4Tq6Xe

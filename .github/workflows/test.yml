@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths: ["crosslink-claim.py", "tools/**", "tests/**", "names/**", ".github/workflows/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - { python: "3.12", os: ubuntu-24.04 } # CI's own Python
+          - { python: "3.8", os: ubuntu-22.04 } # the oldest an operator's server might run the script on
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the checks' dependency
+        run: |
+          if [ "${{ matrix.python }}" = 3.12 ]; then
+            pip install --require-hashes -r tools/requirements.txt
+          else
+            pip install cryptography  # the newest release that still supports this Python
+          fi
+      - run: python -m unittest discover tests -v

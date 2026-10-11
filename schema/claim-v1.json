@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/encapsulate-xyz/crosslink-profiles/blob/main/schema/claim-v1.json",
+  "title": "Crosslink profile claim, version 1",
+  "description": "The shape of claims/<anchor>.json. The shape alone proves nothing: the signatures and the other checks are in tools/claims.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "network", "anchor", "name", "block", "pubkey", "signature"],
+  "properties": {
+    "version": { "const": 1 },
+    "network": { "const": "Crosslink v14" },
+    "anchor": {
+      "description": "The address that signs the name, the profile and the members: a finalizer, or a miner if the claim has no finalizer.",
+      "oneOf": [{ "$ref": "#/$defs/finalizer" }, { "$ref": "#/$defs/miner" }]
+    },
+    "name": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9 ._-]{0,31}$" },
+    "description": { "type": "string", "minLength": 1, "maxLength": 280 },
+    "website": { "type": "string", "pattern": "^https://", "maxLength": 200 },
+    "x": { "type": "string", "pattern": "^https://x\\.com/[A-Za-z0-9_]{1,15}$" },
+    "github": { "type": "string", "pattern": "^https://github\\.com/" },
+    "security_contact": { "type": "string", "maxLength": 254, "description": "An email address or an https:// link." },
+    "logo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "sha256"],
+      "properties": {
+        "url": { "type": "string", "pattern": "^https://", "maxLength": 300 },
+        "sha256": { "$ref": "#/$defs/hex32" }
+      }
+    },
+    "block": { "$ref": "#/$defs/block" },
+    "pubkey": { "type": "string", "pattern": "^[0-9a-f]+$", "description": "The anchor's public key: ed25519 (32 bytes) for a finalizer, compressed secp256k1 (33 bytes) for a miner." },
+    "signature": { "type": "string", "pattern": "^[0-9a-f]+$", "description": "The anchor's signature over its message: ed25519 (64 bytes), or DER ECDSA over SHA-256." },
+    "members": {
+      "type": "array",
+      "maxItems": 100,
+      "description": "Miner addresses in the claim, sorted by address. Each signs its own membership.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["address", "block", "pubkey", "signature"],
+        "properties": {
+          "address": { "$ref": "#/$defs/miner" },
+          "block": { "$ref": "#/$defs/block" },
+          "pubkey": { "type": "string", "pattern": "^0[23][0-9a-f]{64}$" },
+          "signature": { "type": "string", "pattern": "^[0-9a-f]+$" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "finalizer": { "type": "string", "pattern": "^zfinv1[A-Za-z0-9_-]{128}$" },
+    "miner": { "type": "string", "pattern": "^tm[1-9A-HJ-NP-Za-km-z]{33}$" },
+    "hex32": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["height", "hash"],
+      "properties": {
+        "height": { "type": "integer", "minimum": 0 },
+        "hash": { "$ref": "#/$defs/hex32" }
+      }
+    }
+  }
+}

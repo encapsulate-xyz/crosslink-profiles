@@ -1,0 +1,67 @@
+# Organisations' names. A claim whose name matches or resembles one waits for a maintainer to
+# check that the claim really comes from that organisation. It isn't rejected.
+# Compared ignoring case, spaces, '.', '_' and '-', with look-alike characters folded together
+# (0 and o, 1 and l, rn and m, …). Names of 5 characters or more also match inside a longer name.
+
+# Zcash
+Electric Coin Company
+ECC
+Zcash Foundation
+ZF
+Shielded Labs
+Zcash Community Grants
+ZCG
+Financial Privacy Foundation
+ZecHub
+Zingo Labs
+Zingo
+Zashi
+Zodl
+Nighthawk
+Ywallet
+Zcash Media
+Free2Z
+ctaz.cash
+CipherScan
+Atmosphere Labs
+Encapsulate
+Holdfast
+
+# Exchanges, wallets and custodians
+Coinbase
+Binance
+Kraken
+Gemini
+OKX
+Bitfinex
+Bitget
+Bybit
+KuCoin
+Ledger
+Trezor
+Keystone
+Brave
+Edge
+Unstoppable
+
+# Staking and node operators
+Figment
+Chorus One
+Everstake
+P2P
+Kiln
+Staked
+Blockdaemon
+Allnodes
+Stakefish
+Ankr
+InfStones
+Twinstake
+Luganodes
+Stakin
+Imperator
+Polkachu
+Cosmostation
+Lavender Five
+Nodes.Guru
+Stakecito

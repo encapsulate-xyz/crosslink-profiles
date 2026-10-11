@@ -1,0 +1,28 @@
+# Names nobody can claim: they'd mislead people about who runs an address, or read as the
+# explorer's own labels. Compared ignoring case, spaces, '.', '_' and '-'.
+unnamed
+unknown
+anonymous
+anon
+nobody
+none
+null
+undefined
+faucet
+shared faucet
+admin
+administrator
+moderator
+official
+support
+helpdesk
+system
+root
+crosslink
+zcash
+zec
+ctaz
+taz
+finalizer
+miner
+validator
