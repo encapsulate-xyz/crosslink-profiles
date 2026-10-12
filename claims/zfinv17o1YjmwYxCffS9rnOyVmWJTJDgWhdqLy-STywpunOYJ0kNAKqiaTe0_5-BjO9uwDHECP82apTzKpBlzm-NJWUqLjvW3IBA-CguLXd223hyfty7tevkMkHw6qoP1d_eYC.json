@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "network": "Crosslink v14",
+  "anchor": "zfinv17o1YjmwYxCffS9rnOyVmWJTJDgWhdqLy-STywpunOYJ0kNAKqiaTe0_5-BjO9uwDHECP82apTzKpBlzm-NJWUqLjvW3IBA-CguLXd223hyfty7tevkMkHw6qoP1d_eYC",
+  "name": "capitalist42",
+  "block": {
+    "height": 42634,
+    "hash": "000030765f543ff67dc9345823bc102ddc0194b4a6a83f65ba6bd5ee889dd2ee"
+  },
+  "pubkey": "ee8d588e6c18c427df4bdae73b25665894c90e05a176a2f2f924f2c29ba73982",
+  "signature": "7ea304ca19c05ca6fc86526ef47178f90516fd755bdf92da4954d31212b2bb8c1e68dd5bd4d3a5fe3a1c5c482639b65fe02f2bacf509bcde436d208cc094b205",
+  "members": [
+    {
+      "address": "tmFHCMmGXCqzHWdrhxMFPwPz5QMjs3iBoLR",
+      "block": {
+        "height": 42634,
+        "hash": "000030765f543ff67dc9345823bc102ddc0194b4a6a83f65ba6bd5ee889dd2ee"
+      },
+      "pubkey": "02c13f3c3600fd871bac70d47145acb7247585248f9c6ac5db55048612e8c9123d",
+      "signature": "304502202ea442dc4dae8da1ae0ba3f92d6df683d1d000edc552919d3908a6b2646c07d4022100acd2087501b70984eedc47bbe28155b392638c4a950721521fa902ddb2d440fd"
+    }
+  ]
+}
