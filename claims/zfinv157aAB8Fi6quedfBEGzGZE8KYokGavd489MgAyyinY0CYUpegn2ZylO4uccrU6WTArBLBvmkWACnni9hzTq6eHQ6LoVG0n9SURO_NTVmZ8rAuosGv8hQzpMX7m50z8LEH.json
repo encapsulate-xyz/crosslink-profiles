@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "network": "Crosslink v14",
+  "anchor": "zfinv157aAB8Fi6quedfBEGzGZE8KYokGavd489MgAyyinY0CYUpegn2ZylO4uccrU6WTArBLBvmkWACnni9hzTq6eHQ6LoVG0n9SURO_NTVmZ8rAuosGv8hQzpMX7m50z8LEH",
+  "name": "ZCyberLabs",
+  "description": "Independent research & engineering lab. Crosslink finalizer operations, security/reliability testing, BFT observability and GPU/CUDA engineering.",
+  "website": "https://zcyberlabs.org",
+  "x": "https://x.com/ZCyberLabs",
+  "github": "https://github.com/ZCyberLabs",
+  "security_contact": "security@zcyberlabs.org",
+  "block": {
+    "height": 40256,
+    "hash": "0000245d0ad5256366476f5a5d347b2f8de18513b38cabad89a855c56294488f"
+  },
+  "pubkey": "e7b68007c162eaab9e75f0441b319913c298a2419abdde3cf4c800cb28a76340",
+  "signature": "cbb3ab65525d971a1a5b71fc971fc45b96933753dcdd8e720e41b56fe5fa4be06d084c9d1988a19ba3a5cba85c04d9606d642269cd067761da45955393dfaa0b"
+}
