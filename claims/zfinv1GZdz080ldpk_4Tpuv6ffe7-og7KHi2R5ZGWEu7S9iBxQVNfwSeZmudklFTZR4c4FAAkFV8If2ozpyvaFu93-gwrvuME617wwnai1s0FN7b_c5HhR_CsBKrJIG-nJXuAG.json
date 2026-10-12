@@ -3,11 +3,11 @@
   "network": "Crosslink v14",
   "anchor": "zfinv1GZdz080ldpk_4Tpuv6ffe7-og7KHi2R5ZGWEu7S9iBxQVNfwSeZmudklFTZR4c4FAAkFV8If2ozpyvaFu93-gwrvuME617wwnai1s0FN7b_c5HhR_CsBKrJIG-nJXuAG",
   "name": "Update Flow Test",
-  "description": "Throwaway claim to test the update flow. Removed after the test.",
+  "description": "Throwaway claim to test the update flow, updated with one-click Submit. Removed after the test.",
   "block": {
-    "height": 42771,
-    "hash": "00002b04ed1d362514767c0760762038bbcc8239ed867089a273a45f3d0fa336"
+    "height": 42780,
+    "hash": "000034ae6d11c1769620e3d1727741b1dd8e569c4926490f09a702393a1a3cf2"
   },
   "pubkey": "199773d3cd2576993fe13a6ebfa7df7bbfa883b2878b6479646584bbb4bd881c",
-  "signature": "5bc6f1dc6adb294cd9253cec38ab65220706464448e4a91027a00611090befd23d90990ce13232c21a85dc24686deaeeaa56d98b1d9c89d2f4e65c3fbff5e506"
+  "signature": "e9c15f2bf9536127d987811fea55520f30f854a33404a7317ed3d4077132d2cfa34fd69c49ea4f8e68895839c70fa669582be9739727e8e4f95f5b998ccfb70e"
 }
