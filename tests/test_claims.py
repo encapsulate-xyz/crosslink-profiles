@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -41,6 +42,19 @@ class Chain:
 
     def hash_at(self, h):
         return hashlib.sha256(b"block %d" % h).hexdigest()
+
+
+class LinkChain(Chain):
+    """A chain that answers stake_link with `link`, or raises it."""
+
+    def __init__(self, link):
+        super().__init__()
+        self.link = link
+
+    def stake_link(self, finalizer, address):
+        if isinstance(self.link, Exception):
+            raise self.link
+        return self.link
 
 
 def block(h):
@@ -81,7 +95,8 @@ def make(name="Halyard", entropy=SEED_A, members=(), height=39990, signers=None,
 def check(claim, base=None, **kw):
     path = "claims/%s.json" % claim.get("anchor")
     kw.setdefault("ctaz", [])
-    return C.check_claim(path, claim, base or {}, Chain(), **kw)
+    chain = kw.pop("chain", None) or Chain()
+    return C.check_claim(path, claim, base or {}, chain, **kw)
 
 
 def failed(result):
@@ -240,6 +255,34 @@ class Checks(unittest.TestCase):
         self.assertEqual(r["verdict"], "review")
         r = check(make(name="Tidewater"), ctaz=[(keys(SEED_A)["finalizer"], "Tidewater")])
         self.assertEqual(r["verdict"], "merge")  # the same address's own ctaz.cash name
+
+    def test_ctaz_name_of_a_miner_staking_like_the_operator(self):
+        miner = keys(SEED_C)["wallet"][0][0]
+        ctaz = [(miner, "Tidewater")]
+        owner = {"bonds": 92, "zats": 590600000000, "total": 789190000000, "elsewhere": 0}
+        r = check(make(name="Tidewater"), ctaz=ctaz, chain=LinkChain(owner))
+        self.assertEqual(r["verdict"], "merge")
+        self.assertTrue(any("92 bonds, 5,906 cTAZ, 75% of its stake" in n for n in r["notes"]), r["notes"])
+        for link in (dict(owner, elsewhere=1), dict(owner, zats=owner["total"] // 3), dict(owner, bonds=2, zats=10, total=10),
+                     dict(owner, bonds=0, zats=0, total=0)):
+            r = check(make(name="Tidewater"), ctaz=ctaz, chain=LinkChain(link))
+            self.assertEqual(r["verdict"], "review", link)
+            self.assertIn("add it to this claim as a member", r["review"][0])
+        r = check(make(name="Tidewater"), ctaz=ctaz, chain=LinkChain(C.ClaimError("down")))
+        self.assertEqual(r["verdict"], "review")
+        self.assertTrue(any("weren't checked" in n for n in r["notes"]))
+        self.assertEqual(check(make(name="Tidewater"), ctaz=ctaz)["verdict"], "review")  # a chain that can't say
+
+    def test_stake_link_counts_only_bonds_the_address_paid_for(self):
+        snap = {"fins": [{"key": "k0", "addr": "zfinv1this"}, {"key": "k1", "addr": "zfinv1other"}],
+                "evs": [[1, 0, 1, 0, 300, 0, None, "t1"], [2, 0, 1, 1, 400, 0, None, "t2"],
+                        [3, 0, 1, 2, 500, 0, None, "t3"], [4, 0, 1, 3, 50, 1, None, "t4"], [5, 0, 4, 0, None, 0, None, "t1"]]}
+        history = {"a": "tmX", "list": [[1, 0, -301, "t1"], [2, 0, -401, "t2"], [3, 0, 7, "t3"], [4, 0, -51, "t4"]]}
+        get = lambda url, **kw: snap if url.endswith("/api/snapshot") else history
+        with mock.patch.object(C, "_get_json", side_effect=get):
+            link = C.HoldfastChain("https://h").stake_link("zfinv1this", "tmX")
+        # t3 only paid tmX, so its bond isn't tmX's; t4 went to another finalizer; the retarget isn't a new bond.
+        self.assertEqual(link, {"bonds": 2, "zats": 700, "total": 1200, "elsewhere": 1})
 
     def test_faucet_refused(self):
         claim = make()

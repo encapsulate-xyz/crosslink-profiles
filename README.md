@@ -64,7 +64,7 @@ Every pull request is checked before it merges:
 - A member doesn't have its own claim.
 - A logo is the image whose hash was signed.
 
-A name that matches or resembles a known organisation's ([names/review.txt](names/review.txt)), another claim's name, or a name someone else claimed on ctaz.cash waits for a maintainer. That isn't a rejection. The maintainer checks that the name belongs to whoever runs the addresses, then adds the `review-approved` label, and the claim merges.
+A name that matches or resembles a known organisation's ([names/review.txt](names/review.txt)), another claim's name, or a name someone else claimed on ctaz.cash waits for a maintainer. That isn't a rejection. The maintainer checks that the name belongs to whoever runs the addresses, then adds the `review-approved` label, and the claim merges. Two things skip the wait for a ctaz.cash name: the claim lists that miner address as a member, or, for a finalizer, the chain shows the miner staking like its operator (at least 3 bonds, all of them to this finalizer, and at least half of its stake).
 
 The workflow comments on the pull request with the result of each check. The comment ends with the same result as JSON in an HTML comment (`<!-- claim-check {...} -->`), for the claim page to read.
 
