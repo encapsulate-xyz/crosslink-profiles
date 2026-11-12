@@ -524,13 +524,13 @@ def index(claims, commit=None):
 
 # ---- The chain ---------------------------------------------------------------------------------
 
-def _get_json(url, data=None, timeout=20):
+def _get_json(url, data=None, timeout=20, limit=4 * 1024 * 1024):
     req = urllib.request.Request(url, data=data, headers={"user-agent": "crosslink-profiles-check", "content-type": "application/json"})
     last = None
     for _ in range(3):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
-                return json.loads(r.read(4 * 1024 * 1024))
+                return json.loads(r.read(limit))
         except (OSError, ValueError) as e:
             last = e
     raise ClaimError("couldn't read %s: %s" % (url.split("?")[0], last))
@@ -542,6 +542,7 @@ class HoldfastChain:
     def __init__(self, base=DEFAULT_CHAIN_API):
         self.base = base.rstrip("/")
         self.label = "Holdfast (%s)" % self.base
+        self._snapshot = None
 
     def tip(self):
         return int(_get_json(self.base + "/api/tip")["tip"])
@@ -549,6 +550,32 @@ class HoldfastChain:
     def hash_at(self, height):
         rows = _get_json("%s/api/blocks?h=%d" % (self.base, height))
         return rows[0]["hash"] if rows else None
+
+    def stake_link(self, finalizer, address):
+        """What the transparent `address` staked to `finalizer`: {"bonds": bonds it created to it,
+        "zats": their amount, "total": the amount of every bond ever created to it, "elsewhere":
+        how many other finalizers it created bonds to}. A bond counts as the address's when it was
+        created in a transaction the address spent in. Holdfast's snapshot lists finalizers as
+        {key, addr} and staking events as [height, idx, kind, bond, zats, target, source, txid],
+        kind 1 a new bond, target an index into the finalizers (holdfast: server/snapshot.ts)."""
+        if self._snapshot is None:
+            self._snapshot = _get_json(self.base + "/api/snapshot", timeout=60, limit=64 * 1024 * 1024)
+        fins, events = self._snapshot["fins"], self._snapshot["evs"]
+        history = _get_json("%s/api/address/%s" % (self.base, address), timeout=30, limit=64 * 1024 * 1024)["list"]
+        spent = {row[3] for row in history if row[2] < 0}  # [height, idx, net zats, txid]
+        target = {i for i, f in enumerate(fins) if f.get("addr") == finalizer}
+        new = [e for e in events if e[2] == 1]
+        made = [e for e in new if e[7] in spent]
+        return {"bonds": sum(1 for e in made if e[5] in target), "zats": sum(e[4] or 0 for e in made if e[5] in target),
+                "total": sum(e[4] or 0 for e in new if e[5] in target), "elsewhere": len({e[5] for e in made if e[5] not in target})}
+
+
+def runs_the_finalizer(link):
+    """Whether a stake_link shows the address running the finalizer: at least 3 bonds, every one of
+    them to this finalizer, and at least half of all its stake. Anyone can stake to any finalizer,
+    but only the address's own key spends from it, so a claimant can't make this pass for a name
+    that isn't theirs."""
+    return link["bonds"] >= 3 and not link["elsewhere"] and link["total"] > 0 and 2 * link["zats"] >= link["total"]
 
 
 class NodeChain:
@@ -730,8 +757,26 @@ def check_claim(path, claim, base, chain, approved=False, ctaz=None, fetch=fetch
         if ctaz is not None:
             mine = set(addrs)
             for addr, n in ctaz:
-                if addr not in mine and (name_key(n) == key or skeleton(n) == sk):
-                    review.append("%r matches %r, which %s claimed on ctaz.cash" % (claim["name"], n, short(addr)))
+                if addr in mine or not (name_key(n) == key or skeleton(n) == sk):
+                    continue
+                miner = isinstance(addr, str) and addr.startswith("tm")
+                # A ctaz.cash name is a miner's. If that miner's stake shows it runs this finalizer, it's the same operator.
+                if miner and anchor and anchor.kind == "finalizer" and hasattr(chain, "stake_link"):
+                    try:
+                        link = chain.stake_link(anchor_text, addr)
+                    except (ClaimError, KeyError, TypeError, IndexError, AttributeError):
+                        link = None
+                        notes.append("Holdfast's staking data couldn't be read, so %s's bonds weren't checked." % short(addr))
+                    if link and runs_the_finalizer(link):
+                        notes.append("%r is %s's name on ctaz.cash, and every bond that address created went to this finalizer: "
+                                     "%d bonds, %s cTAZ, %d%% of its stake. So it's the same operator, and the name needs no review."
+                                     % (n, short(addr), link["bonds"], "{:,.8g}".format(link["zats"] / 1e8),
+                                        round(100.0 * link["zats"] / link["total"])))
+                        continue
+                why = "%r matches %r, which %s claimed on ctaz.cash" % (claim["name"], n, short(addr))
+                if miner:
+                    why += ". If you run %s, add it to this claim as a member" % short(addr)
+                review.append(why)
         else:
             notes.append("ctaz.cash's claims couldn't be read, so names weren't compared with them.")
     return done()
