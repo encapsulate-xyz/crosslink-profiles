@@ -116,9 +116,9 @@ class CI(unittest.TestCase):
         self.setUp()
         self.assertEqual(self.run_check(files, labels=["review-approved"])["verdict"], "merge")
 
-    def apply(self, result, comments=(), labels=(), bot=""):
+    def apply(self, result, comments=(), labels=(), bot="", reviewers=""):
         fake = FakeGitHub({}, [], comments, labels)
-        env = {"GITHUB_REPOSITORY": "o/r", "GH_TOKEN": "x", "CLAIM_BOT": bot,
+        env = {"GITHUB_REPOSITORY": "o/r", "GH_TOKEN": "x", "CLAIM_BOT": bot, "CLAIM_REVIEWERS": reviewers,
                "RESULT": base64.b64encode(json.dumps(result).encode()).decode()}
         with mock.patch.dict(os.environ, env), mock.patch.object(ci, "gh", fake), mock.patch("sys.stdout"):
             ci.apply(None)
@@ -148,6 +148,25 @@ class CI(unittest.TestCase):
         self.assertIn(("PATCH", "/repos/o/r/pulls/1", {"state": "closed"}), calls)
         self.assertIn(("DELETE", "/repos/o/r/git/refs/heads/claim/x", None), calls)
         self.assertFalse([c for c in self.apply(self.result("reject")) if c[1] == "/repos/o/r/pulls/1"])
+
+    def test_apply_review_requests_the_reviewers(self):
+        calls = self.apply(self.result("review"), reviewers="alice, bob")
+        self.assertIn(("POST", "/repos/o/r/issues/1/labels", {"labels": ["needs-review"]}), calls)
+        self.assertIn(("POST", "/repos/o/r/pulls/1/requested_reviewers", {"reviewers": ["alice", "bob"]}), calls)
+        calls = self.apply(self.result("review", author="bob"), reviewers="alice,bob")
+        self.assertIn(("POST", "/repos/o/r/pulls/1/requested_reviewers", {"reviewers": ["alice"]}), calls)
+        self.assertFalse([c for c in self.apply(self.result("review", author="alice"), reviewers="alice")
+                          if c[1].endswith("/requested_reviewers")])
+
+    def test_apply_requests_a_review_once(self):
+        calls = self.apply(self.result("review"), labels=["needs-review"], reviewers="alice")
+        self.assertFalse([c for c in calls if c[1].endswith("/requested_reviewers")])
+
+    def test_apply_requests_a_review_only_when_one_is_needed(self):
+        for verdict in ("merge", "reject"):
+            calls = self.apply(self.result(verdict), reviewers="alice")
+            self.assertFalse([c for c in calls if c[1].endswith("/requested_reviewers")], verdict)
+        self.assertFalse([c for c in self.apply(self.result("review")) if c[1].endswith("/requested_reviewers")])
 
     def test_apply_stale_does_nothing(self):
         self.assertEqual(self.apply({"verdict": "stale", "pr": 1}), [])

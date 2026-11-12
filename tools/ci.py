@@ -137,6 +137,12 @@ def apply(args):
     if want and want not in have:
         gh("POST", "/repos/%s/issues/%d/labels" % (repo, n), {"labels": [want]})
 
+    # Claims have no code owner, so the label alone tells nobody. A review request emails each reviewer,
+    # once: when the claim first gets the label. GitHub refuses a request to review your own pull request.
+    reviewers = [r for r in os.environ.get("CLAIM_REVIEWERS", "").replace(",", " ").split() if r != result.get("author")]
+    if verdict == "review" and want not in have and reviewers:
+        gh("POST", "/repos/%s/pulls/%d/requested_reviewers" % (repo, n), {"reviewers": reviewers})
+
     if verdict == "merge":
         # Merges exactly the commit that was checked: a push after the check makes this fail.
         gh("PUT", "/repos/%s/pulls/%d/merge" % (repo, n), {

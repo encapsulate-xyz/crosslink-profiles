@@ -64,4 +64,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RESULT: ${{ needs.check.outputs.result }}
           CLAIM_BOT: ${{ vars.CLAIM_BOT }}
+          # Who gets a review request (and so an email) when a claim needs a person: GitHub handles, comma-separated.
+          CLAIM_REVIEWERS: aditya-manit
         run: python3 tools/ci.py apply
